@@ -1,39 +1,38 @@
-import readline from 'readline';
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-const prompt = (question: string): Promise<string> => {
-    return new Promise((resolve) => {
-        rl.question(question, (answer) => {
-            resolve(answer);
-        });
-    });
-};
-const Pay_method = async () => {
-    const get = await prompt('How would you like to pay? 1.Cash 2.CreditCard :');
-    if(get=== "Cash"){
+import inquirer from "inquirer";
+async function Pay_method(){
+const answer= await inquirer.prompt([{
+    type:"input",
+        name:"get",
+        message:"How would you like to pay? 1.Cash 2.CreditCard"},]);
+    if(answer.get=== "Cash"){
         console.log("You choose to pay in Cash");
         console.log("Thank you for choosing us");
     }
-    else if(get==="CreditCard"){
-        const get1= await prompt('Please enter your Credit card number:');
-        console.log(`Your credit Card Number is : ${get1}`);
-        const get2=await prompt('Enter Pin:');
+    else if(answer.get==="CreditCard"){
+        const get1= await inquirer.prompt([{
+            type:"input",
+            name:"getCC",
+            message:"Please enter your Credit card number:"},{
+        type: "input",
+        name:"getPin",
+        message:"Enter Pin"},]);
+        console.log(`Your credit Card Number is : ${get1.getCC}`);
         console.log(`Pin Entered Correctly`);
         console.log("Transaction Successful");
         console.log("Thank you for choosing us");
-    }
+     }
     else{
         console.log("Invalid input");
     }
-    rl.close();
-};
-const grocery = async () => {
-    const answer = await prompt('Do you want to choose fruits or vegetables? Enter "fruits" or "vegetables": ');
+}
+async function grocery(){
+     const answer1 = await inquirer.prompt([{
+        type:"input",
+        name:"getFV",
+        message:'Do you want to choose fruits or vegetables? Enter "fruits" or "vegetables"'
+     }, ])
 
-    if (answer === 'fruits') {
+    if (answer1.getFV === 'fruits') {
         console.log('***********************Fruits************************');
 
         //array containing objects of fruits
@@ -46,16 +45,22 @@ const grocery = async () => {
         let pr: number[] = [12, 10, 22];
         //loop to display fruits
         for (const fru of fruitList) {
-            console.log(`${fru.item} - ${fru.price}$/${fru.quantity}`);
+            console.log(`${fru.item} - ${fru.price}$/ ${fru.quantity}`);
         }
-       //ask which fruit to buy
-        const ans = await prompt('Which fruit you want to buy? Enter Name of fruits: ');
+//        //ask which fruit to buy
+        const ans = await inquirer.prompt([{
+            type:'input',
+            name:'getFrt',
+            message:'Which fruit you want to buy? Enter Name of fruits: '}, ]);
 
-        if (ans === "apple") {
+        if (ans.getFrt === "apple") {
 
-            const qty = await prompt('Enter Quantity: '); //ask quantity
-            console.log(`Item: ${ans}  Quantity:${qty}`);
-            let total = pr[0] * parseInt(qty, 10);
+            const qty = await inquirer.prompt([{
+                type:'input',
+                name:'getQty',
+                message:'Enter Quantity: '}, ]); //ask quantity
+            console.log(`Item: ${ans.getFrt}  Quantity:${qty.getQty}`);
+            let total = pr[0] * parseInt(qty.getQty, 10);
 
             if(total<=50){ //display total
             console.log(`Total Bill: ${total}`);
@@ -67,27 +72,14 @@ const grocery = async () => {
                 console.log(`Discounted Bill: ${total}`);
                 Pay_method();
             }
-        } if (ans === "banana") {
+        } if (ans.getFrt === "banana") {
 
-            const qty = await prompt('Enter Quantity: ');
-            console.log(`Item: ${ans} Quantity:${qty}`);
-            let total = pr[1] * parseInt(qty, 10);
-
-            if(total<=50){ //display total
-                console.log(`Total Bill: ${total}`);
-                Pay_method();
-                }
-                else if(total>50){ //apply discount
-                    console.log(`Total Bill: ${total}`);
-                    total*=0.7;
-                    console.log(`Discounted Bill: ${total}`);
-                    Pay_method();
-                }
-        } if (ans === "cherry") {
-
-            const qty = await prompt('Enter Quantity: ');
-            console.log(`Item: ${ans} Quantity:${qty}`);
-            let total = pr[2] * parseInt(qty, 10);
+            const qty = await inquirer.prompt([{
+                type:'input',
+                name:'getQty',
+                message:'Enter Quantity: '}, ]); //ask quantity
+            console.log(`Item: ${ans.getFrt}  Quantity:${qty.getQty}`);
+            let total = pr[1] * parseInt(qty.getQty, 10);
 
             if(total<=50){ //display total
                 console.log(`Total Bill: ${total}`);
@@ -99,8 +91,28 @@ const grocery = async () => {
                     console.log(`Discounted Bill: ${total}`);
                     Pay_method();
                 }
+        } if (ans.getFrt === "cherry") {
+
+            const qty = await inquirer.prompt([{
+                type:'input',
+                name:'getQty',
+                message:'Enter Quantity: '}, ]); //ask quantity
+            console.log(`Item: ${ans.getFrt}  Quantity:${qty.getQty}`);
+            let total = pr[1] * parseInt(qty.getQty, 10);
+
+            if(total<=50){ //display total
+                console.log(`Total Bill: ${total}`);
+                Pay_method();
+                }
+                else if(total>50){ //apply discount
+                    console.log(`Total Bill: ${total}`);
+                    total*=0.7;
+                    console.log(`Discounted Bill: ${total}`);
+                    Pay_method();
         } 
-    } if (answer === 'vegetables') {
+    }
+}
+    if (answer1.getFV === 'vegetables') {
         console.log('***********************Vegetables************************');
         //array containing objects of vegetables
         const VegList = [
@@ -115,14 +127,19 @@ const grocery = async () => {
             console.log(`${vegg.item} - ${vegg.price}$/${vegg.quantity}`);
         }
         //ask which vegetable to buy
-        const ans = await prompt('Which vegetable you want to buy? Enter Name of vegetables: ');
+         const ans = await inquirer.prompt([{
+            type:'input',
+            name:'getVeg',
+            message:'Which vegetable you want to buy? Enter Name of Vegetable: '}, ]);
+        if (ans.getVeg === "cabbage") {
 
-        if (ans === "cabbage") {
-
-            const qty = await prompt('Enter Quantity: '); //ask quantity
-            console.log(`Item: ${ans}  Quantity:${qty}`);
-            let total = pr[0] * parseInt(qty, 10);
-
+            const qty = await inquirer.prompt([{
+                type:'input',
+                name:'getQty',
+                message:'Enter Quantity: '}, ]); //ask quantity
+            console.log(`Item: ${ans.getFrt}  Quantity:${qty.getQty}`);
+            let total = pr[1] * parseInt(qty.getQty, 10);
+            
             if(total<=50){ //display total
                 console.log(`Total Bill: ${total}`);
                 Pay_method();
@@ -133,40 +150,44 @@ const grocery = async () => {
                     console.log(`Discounted Bill: ${total}`);
                     Pay_method();
                 }
-        } if (ans === "onion") {
+        } if (ans.getVeg === "onion") {
 
-            const qty = await prompt('Enter Quantity: ');
-            console.log(`Item: ${ans} Quantity:${qty}`);
-            let total = pr[1] * parseInt(qty, 10);
+             const qty = await inquirer.prompt([{
+    type:'input',
+    name:'getQty',
+    message:'Enter Quantity: '}, ]); //ask quantity
+console.log(`Item: ${ans.getFrt}  Quantity:${qty.getQty}`);
+let total = pr[1] * parseInt(qty.getQty, 10);
 
-            if(total<=50){ //display total
-                console.log(`Total Bill: ${total}`);
-                Pay_method();
-                }
-                else if(total>50){ //apply discount
-                    console.log(`Total Bill: ${total}`);
-                    total*=0.7;
-                    console.log(`Discounted Bill: ${total}`);
-                    Pay_method();
-                }
-        } if (ans === "tomato") {
-            const qty = await prompt('Enter Quantity: ');
-            console.log(`Item: ${ans} Quantity:${qty}`);
-            let total = pr[2] * parseInt(qty, 10);
-
-            if(total<=50){ //display total
-                console.log(`Total Bill: ${total}`);
-                Pay_method();
-                }
-                else if(total>50){ //apply discount
-                    console.log(`Total Bill: ${total}`);
-                    total*=0.7;
-                    console.log(`Discounted Bill: ${total}`);
-                    Pay_method();
-                }
-        } 
+if(total<=50){ //display total
+    console.log(`Total Bill: ${total}`);
+    Pay_method();
     }
-    await Pay_method();
-    rl.close();
-};
-grocery();
+    else if(total>50){ //apply discount
+        console.log(`Total Bill: ${total}`);
+        total*=0.7;
+        console.log(`Discounted Bill: ${total}`);
+        Pay_method();
+                }
+        } if (ans.getVeg === "tomato") {          
+            const qty = await inquirer.prompt([{
+            type:'input',
+            name:'getQty',
+            message:'Enter Quantity: '}, ]); //ask quantity
+        console.log(`Item: ${ans.getFrt}  Quantity:${qty.getQty}`);
+        let total = pr[1] * parseInt(qty.getQty, 10);
+        
+        if(total<=50){ //display total
+            console.log(`Total Bill: ${total}`);
+            Pay_method();
+            }
+            else if(total>50){ //apply discount
+                console.log(`Total Bill: ${total}`);
+                total*=0.7;
+                console.log(`Discounted Bill: ${total}`);
+                Pay_method();
+                        }
+                }
+            }
+        }
+ grocery();
